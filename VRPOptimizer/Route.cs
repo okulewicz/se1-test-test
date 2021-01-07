@@ -6,6 +6,7 @@ namespace VRPOptimizer
 {
     public class Route
     {
+        private const double MAX_ROUTE_LENGTH = 8.0;
         readonly List<Point> points;
 
         public Route()
@@ -15,21 +16,27 @@ namespace VRPOptimizer
 
         public bool AddPoint(Point point)
         {
-            if (points.Count == 0)
+            double currentRouteLength = GetLength();
+            double distanceToNewPoint = GetDistanceToNewPoint(point);
+
+            if (currentRouteLength + distanceToNewPoint <= MAX_ROUTE_LENGTH)
             {
                 points.Add(point);
                 return true;
             }
-            else
+            return false;
+        }
+
+        private double GetDistanceToNewPoint(Point point)
+        {
+            double distanceToNewPoint = 0.0;
+            Point lastPoint = points.LastOrDefault();
+            if (lastPoint != null)
             {
-                Point lastPoint = points.Last();
-                if (this.GetLength() + lastPoint.GetDistance(point) < 8)
-                {
-                    points.Add(point);
-                    return true;
-                }
-                return false;
+                distanceToNewPoint = lastPoint.GetDistance(point);
             }
+
+            return distanceToNewPoint;
         }
 
         public double GetLength()
