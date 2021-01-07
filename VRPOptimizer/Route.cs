@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VRPOptimizer
 {
@@ -12,9 +13,23 @@ namespace VRPOptimizer
             points = new List<Point>();
         }
 
-        public void AddPoint(Point point)
+        public bool AddPoint(Point point)
         {
-            points.Add(point);
+            if (points.Count == 0)
+            {
+                points.Add(point);
+                return true;
+            }
+            else
+            {
+                Point lastPoint = points.Last();
+                if (this.GetLength() + lastPoint.GetDistance(point) < 8)
+                {
+                    points.Add(point);
+                    return true;
+                }
+                return false;
+            }
         }
 
         public double GetLength()
